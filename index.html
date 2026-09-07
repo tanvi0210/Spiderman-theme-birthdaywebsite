@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Desktop Interactive Site</title>
+  <title>Happy Birthday!</title>
+
+  <!-- Force early network download of background images -->
+<link rel="preload" as="image" href="1.png">
+<link rel="preload" as="image" href="2.png">
+<link rel="preload" as="image" href="3.png">
+<link rel="preload" as="image" href="4.png">
+<link rel="preload" as="image" href="5.png">
 
   <!-- Canvas Confetti Library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -108,22 +115,23 @@
     }
 
     /* =========================================================
-       PAGE 1: Clickable PNG Button (Positioning & Pop Effect)
+       PAGE 1: Clickable PNG Button (Center Position & Pop Effect)
        ========================================================= */
     .clickable-png {
       position: absolute;
       cursor: pointer;
       transition: transform 0.2s ease-in-out;
       
-      /* ADJUST POSITION HERE */
-      bottom: 3%; 
-      right: 30%;  
-      width: 300px; 
+      /* CENTERED POSITIONING */
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px; /* Adjust size here if needed */
     }
 
     /* Pop/Hover effect on Page 1 PNG */
     .clickable-png:hover {
-      transform: scale(1.15); /* Slight enlarge pop effect */
+      transform: translate(-50%, -50%) scale(1.15); /* Keeps center alignment while popping */
     }
 
     /* =========================================================
@@ -131,11 +139,9 @@
        ========================================================= */
     .btn-okay {
       position: absolute;
-      /* ADJUST POSITION HERE */
       bottom: 10%;
       left: 8%;
 
-      /* Styling matching uploaded image */
       background-color: #ffffff;
       color: #000000;
       font-size: 28px;
@@ -144,7 +150,7 @@
       padding: 16px 65px;
       border-radius: 50px;
       border: 3.5px solid #000000;
-      box-shadow: 0px 8px 0px #000000; /* Solid bottom shadow effect */
+      box-shadow: 0px 8px 0px #000000;
       cursor: pointer;
       outline: none;
       transition: all 0.1s ease;
@@ -225,34 +231,24 @@
 
   <!-- PAGE 2 -->
   <div id="page-2" class="page">
-    <!-- Go back to Page 1 Arrow -->
     <button class="arrow-btn v-center left-center" onclick="goToPage(1)">&#10094;</button>
-
-    <!-- OKAY Button to go to Page 3 -->
     <button class="btn-okay" onclick="goToPage(3)">OKAY</button>
   </div>
 
   <!-- PAGE 3 -->
   <div id="page-3" class="page">
-    <!-- Go back to Page 2 Arrow -->
     <button class="arrow-btn v-center left-center" onclick="goToPage(2)">&#10094;</button>
-
-    <!-- Next to Page 4 Arrow -->
     <button class="arrow-btn v-center right-center" onclick="goToPage(4)">&#10095;</button>
   </div>
 
   <!-- PAGE 4 -->
   <div id="page-4" class="page">
-    <!-- Go back to Page 3 Arrow -->
     <button class="arrow-btn v-center left-center" onclick="goToPage(3)">&#10094;</button>
-    
-    <!-- Next to Page 5 Arrow -->
     <button class="arrow-btn v-center right-center" onclick="goToPage(5)">&#10095;</button>
   </div>
 
   <!-- PAGE 5 -->
   <div id="page-5" class="page">
-    <!-- Go back to Page 4 Arrow at Left-Top -->
     <button class="arrow-btn top-left" onclick="goToPage(4)">&#10094;</button>
   </div>
 
@@ -261,7 +257,6 @@
     function enterFullscreen() {
       const elem = document.documentElement;
       
-      // Request Fullscreen with browser vendor prefixes
       if (elem.requestFullscreen) {
         elem.requestFullscreen();
       } else if (elem.webkitRequestFullscreen) { /* Safari */
@@ -270,34 +265,28 @@
         elem.msRequestFullscreen();
       }
 
-      // Hide Modal Prompt
       document.getElementById('fullscreen-modal').style.display = 'none';
     }
 
     function goToPage(pageNumber) {
-      // Hide all pages
       const pages = document.querySelectorAll('.page');
       pages.forEach(page => page.classList.remove('active'));
 
-      // Show the selected page
       const targetPage = document.getElementById(`page-${pageNumber}`);
       if (targetPage) {
         targetPage.classList.add('active');
       }
 
-      // Trigger Confetti specifically for Page 3
       if (pageNumber === 3) {
         triggerConfetti();
       }
     }
 
     function triggerConfetti() {
-      // Dense confetti barrage for 2.5 seconds
       const duration = 0.8 * 1000;
       const animationEnd = Date.now() + duration;
 
       const frame = () => {
-        // High density cannons from left and right edges
         confetti({
           particleCount: 10,
           angle: 60,
@@ -321,7 +310,6 @@
         }
       };
 
-      // Initial big blast
       confetti({
         particleCount: 150,
         spread: 100,
@@ -330,6 +318,15 @@
 
       frame();
     }
+
+    // Preload all background images into browser memory immediately on load
+window.addEventListener('DOMContentLoaded', () => {
+  const bgImages = ['1.png', '2.png', '3.png', '4.png', '5.png'];
+  bgImages.forEach((imageSrc) => {
+    const img = new Image();
+    img.src = imageSrc;
+  });
+});
   </script>
 </body>
 </html>
