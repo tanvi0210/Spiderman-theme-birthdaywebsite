@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desktop Interactive Site</title>
+
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* Reset & Locks to Desktop Fullscreen */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body, html {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden; /* Prevents scrolling */
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #000;
+    }
+
+    /* Page container styling */
+    .page {
+      display: none; /* Hidden by default */
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* Active page visibility */
+    .page.active {
+      display: block;
+    }
+
+    /* Set Background Images */
+    #page-1 { background-image: url('1.png'); }
+    #page-2 { background-image: url('2.png'); }
+    #page-3 { background-image: url('3.png'); }
+    #page-4 { background-image: url('4.png'); }
+    #page-5 { background-image: url('5.png'); }
+
+    /* =========================================================
+       PAGE 1: Clickable PNG Button (Positioning & Pop Effect)
+       ========================================================= */
+    .clickable-png {
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+      
+      /* ADJUST POSITION HERE */
+      bottom: 3%; 
+      right: 30%;  
+      width: 300px; 
+    }
+
+    /* Pop/Hover effect on Page 1 PNG */
+    .clickable-png:hover {
+      transform: scale(1.15); /* Slight enlarge pop effect */
+    }
+
+    /* =========================================================
+       PAGE 2: Custom "OKAY" Button
+       ========================================================= */
+    .btn-okay {
+      position: absolute;
+      /* ADJUST POSITION HERE */
+      bottom: 10%;
+      left: 8%;
+
+      /* Styling matching uploaded image */
+      background-color: #ffffff;
+      color: #000000;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      padding: 16px 65px;
+      border-radius: 50px;
+      border: 3.5px solid #000000;
+      box-shadow: 0px 8px 0px #000000; /* Solid bottom shadow effect */
+      cursor: pointer;
+      outline: none;
+      transition: all 0.1s ease;
+    }
+
+    .btn-okay:hover {
+      transform: translateY(-2px);
+      box-shadow: 0px 10px 0px #000000;
+    }
+
+    .btn-okay:active {
+      transform: translateY(4px);
+      box-shadow: 0px 4px 0px #000000;
+    }
+
+    /* =========================================================
+       GENERIC NAVIGATION ARROW BUTTONS
+       ========================================================= */
+    .arrow-btn {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.85);
+      color: #000;
+      border: 3px solid #000;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+
+    .arrow-btn:hover {
+      background-color: #ffffff;
+      transform: scale(1.1);
+    }
+
+    /* Vertical Center positioning helper */
+    .v-center {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .v-center:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    /* Placement rules for Arrows */
+    .right-center { right: 40px; }
+    .left-center  { left: 40px; }
+    
+    /* Top Left position (for Page 5) */
+    .top-left {
+      top: 40px;
+      left: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1 -->
+  <div id="page-1" class="page active">
+    <img src="clickable.png" alt="Clickable Object" class="clickable-png" onclick="goToPage(2)">
+  </div>
+
+  <!-- PAGE 2 -->
+  <div id="page-2" class="page">
+    <!-- Go back to Page 1 Arrow -->
+    <button class="arrow-btn v-center left-center" onclick="goToPage(1)">&#10094;</button>
+
+    <!-- OKAY Button to go to Page 3 -->
+    <button class="btn-okay" onclick="goToPage(3)">OKAY</button>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div id="page-3" class="page">
+    <!-- Go back to Page 2 Arrow -->
+    <button class="arrow-btn v-center left-center" onclick="goToPage(2)">&#10094;</button>
+
+    <!-- Next to Page 4 Arrow -->
+    <button class="arrow-btn v-center right-center" onclick="goToPage(4)">&#10095;</button>
+  </div>
+
+  <!-- PAGE 4 -->
+  <div id="page-4" class="page">
+    <!-- Go back to Page 3 Arrow -->
+    <button class="arrow-btn v-center left-center" onclick="goToPage(3)">&#10094;</button>
+    
+    <!-- Next to Page 5 Arrow -->
+    <button class="arrow-btn v-center right-center" onclick="goToPage(5)">&#10095;</button>
+  </div>
+
+  <!-- PAGE 5 -->
+  <div id="page-5" class="page">
+    <!-- Go back to Page 4 Arrow at Left-Top -->
+    <button class="arrow-btn top-left" onclick="goToPage(4)">&#10094;</button>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function goToPage(pageNumber) {
+      // Hide all pages
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.classList.remove('active'));
+
+      // Show the selected page
+      const targetPage = document.getElementById(`page-${pageNumber}`);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+
+      // Trigger Confetti specifically for Page 3
+      if (pageNumber === 3) {
+        triggerConfetti();
+      }
+    }
+
+    function triggerConfetti() {
+      // Dense confetti barrage for 2.5 seconds
+      const duration = 0.8 * 1000;
+      const animationEnd = Date.now() + duration;
+
+      const frame = () => {
+        // High density cannons from left and right edges
+        confetti({
+          particleCount: 10,
+          angle: 60,
+          spread: 80,
+          startVelocity: 60,
+          origin: { x: 0, y: 0.8 },
+          colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff']
+        });
+        
+        confetti({
+          particleCount: 10,
+          angle: 120,
+          spread: 80,
+          startVelocity: 60,
+          origin: { x: 1, y: 0.8 },
+          colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff']
+        });
+
+        if (Date.now() < animationEnd) {
+          requestAnimationFrame(frame);
+        }
+      };
+
+      // Initial big blast
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 }
+      });
+
+      frame();
+    }
+  </script>
+</body>
+</html>
