@@ -51,6 +51,63 @@
     #page-5 { background-image: url('5.png'); }
 
     /* =========================================================
+       FULLSCREEN OVERLAY PROMPT
+       ========================================================= */
+    .fullscreen-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+    }
+
+    .modal-content {
+      background: #111;
+      padding: 40px;
+      border-radius: 20px;
+      border: 2px solid #333;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      max-width: 450px;
+    }
+
+    .modal-content h2 {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .modal-content p {
+      font-size: 15px;
+      color: #ccc;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    .btn-fullscreen {
+      background: #ffffff;
+      color: #000;
+      font-weight: bold;
+      font-size: 16px;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .btn-fullscreen:hover {
+      background: #e0e0e0;
+      transform: scale(1.05);
+    }
+
+    /* =========================================================
        PAGE 1: Clickable PNG Button (Positioning & Pop Effect)
        ========================================================= */
     .clickable-png {
@@ -152,6 +209,15 @@
 </head>
 <body>
 
+  <!-- Fullscreen Request Modal -->
+  <div id="fullscreen-modal" class="fullscreen-modal">
+    <div class="modal-content">
+      <h2>Full-Screen Experience</h2>
+      <p>For the best visual experience without browser toolbars covering background details, please enter full-screen mode.</p>
+      <button class="btn-fullscreen" onclick="enterFullscreen()">ENTER FULLSCREEN</button>
+    </div>
+  </div>
+
   <!-- PAGE 1 -->
   <div id="page-1" class="page active">
     <img src="clickable.png" alt="Clickable Object" class="clickable-png" onclick="goToPage(2)">
@@ -192,6 +258,22 @@
 
   <!-- JavaScript -->
   <script>
+    function enterFullscreen() {
+      const elem = document.documentElement;
+      
+      // Request Fullscreen with browser vendor prefixes
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+      }
+
+      // Hide Modal Prompt
+      document.getElementById('fullscreen-modal').style.display = 'none';
+    }
+
     function goToPage(pageNumber) {
       // Hide all pages
       const pages = document.querySelectorAll('.page');
